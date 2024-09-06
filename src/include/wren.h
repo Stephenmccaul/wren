@@ -551,4 +551,7 @@ WREN_API void* wrenGetUserData(WrenVM* vm);
 // Sets user data associated with the WrenVM.
 WREN_API void wrenSetUserData(WrenVM* vm, void* userData);
 
+// Swap the values of two slot positions
+WREN_API void wrenSwapSlot(WrenVM* vm, int slota, int slotb);
+
 #endif
