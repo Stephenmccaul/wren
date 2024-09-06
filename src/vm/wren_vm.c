@@ -1990,3 +1990,15 @@ void wrenSetUserData(WrenVM* vm, void* userData)
 {
 	vm->config.userData = userData;
 }
+
+void wrenSwapSlot(WrenVM* vm, int slota, int slotb)
+{
+  validateApiSlot(vm, slota);
+  validateApiSlot(vm, slotb);
+
+  Value a = vm->apiStack[slota];
+  Value b = vm->apiStack[slotb];
+
+  vm->apiStack[slota] = b;
+  vm->apiStack[slotb] = a;
+}
