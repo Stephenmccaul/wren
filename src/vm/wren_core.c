@@ -1161,6 +1161,16 @@ DEF_PRIMITIVE(string_startsWith)
   RETURN_BOOL(memcmp(string->value, search->value, search->length) == 0);
 }
 
+DEF_PRIMITIVE(string_lessThan)
+{
+  if (!validateString(vm, args[1], "Argument")) return false;
+
+  ObjString* string = AS_STRING(args[0]);
+  ObjString* search = AS_STRING(args[1]);
+
+  RETURN_BOOL(strcmp(string->value, search->value) < 0);
+}
+
 DEF_PRIMITIVE(string_plus)
 {
   if (!validateString(vm, args[1], "Right operand")) return false;
@@ -1426,6 +1436,7 @@ void wrenInitializeCore(WrenVM* vm)
   PRIMITIVE(vm->stringClass, "iteratorValue(_)", string_iteratorValue);
   PRIMITIVE(vm->stringClass, "startsWith(_)", string_startsWith);
   PRIMITIVE(vm->stringClass, "toString", string_toString);
+  PRIMITIVE(vm->stringClass, "<(_)", string_lessThan);
 
   vm->listClass = AS_CLASS(wrenFindVariable(vm, coreModule, "List"));
   PRIMITIVE(vm->listClass->obj.classObj, "filled(_,_)", list_filled);
