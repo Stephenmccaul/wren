@@ -2002,3 +2002,20 @@ void wrenSwapSlot(WrenVM* vm, int slota, int slotb)
   vm->apiStack[slota] = b;
   vm->apiStack[slotb] = a;
 }
+
+
+WREN_API const char* wrenGetCallingModule(WrenVM* vm){
+  ObjFiber* fiber = vm->fiber;
+
+  if(vm->fiber->numFrames-1 < 0){ 
+    return 0;
+  }
+
+  ObjFn* fn = fiber->frames[vm->fiber->numFrames-1].closure->fn;
+
+  if(!fn->module){
+    return 0;
+  } 
+
+  return fn->module->name->value;
+}
