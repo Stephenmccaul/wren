@@ -515,6 +515,13 @@ WREN_API void wrenInsertInList(WrenVM* vm, int listSlot, int index, int elementS
 // Returns the number of entries in the map stored in [slot].
 WREN_API int wrenGetMapCount(WrenVM* vm, int slot);
 
+//used to enumerate keys in a map in [mapSlot].
+//iteratorValue should be 0 the first time and whatever was returned from
+//the previous invocation for the rest. 
+//Will return -1 when there are no more keys to enumerate.
+//if result is not -1 the next key has been stored into [keySlot]
+int wrenGetMapNextKey(WrenVM* vm, int mapSlot, int iteratorValue, int keySlot);
+
 // Returns true if the key in [keySlot] is found in the map placed in [mapSlot].
 WREN_API bool wrenGetMapContainsKey(WrenVM* vm, int mapSlot, int keySlot);
 

@@ -1851,6 +1851,26 @@ int wrenGetMapCount(WrenVM* vm, int slot)
   return map->count;
 }
 
+int wrenGetMapNextKey(WrenVM* vm, int mapSlot, int iteratorValue, int keySlot)
+{
+  validateApiSlot(vm, mapSlot);
+  
+  ASSERT(IS_MAP(vm->apiStack[mapSlot]), "Slot must hold a map.");
+
+  ObjMap* map = AS_MAP(vm->apiStack[mapSlot]);
+
+  if(IS_UNDEFINED(map->entries[iteratorValue].key)){
+    iteratorValue += 1;
+    if(iteratorValue >= (int)map->capacity){
+      return -1;
+    }
+  }
+
+  vm->apiStack[keySlot] = map->entries[iteratorValue].key;
+
+  return iteratorValue;
+}
+
 bool wrenGetMapContainsKey(WrenVM* vm, int mapSlot, int keySlot)
 {
   validateApiSlot(vm, mapSlot);
