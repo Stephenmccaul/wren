@@ -1859,14 +1859,22 @@ int wrenGetMapNextKey(WrenVM* vm, int mapSlot, int iteratorValue, int keySlot)
 
   ObjMap* map = AS_MAP(vm->apiStack[mapSlot]);
 
-  if(IS_UNDEFINED(map->entries[iteratorValue].key)){
+  if(iteratorValue >= (int)map->capacity || iteratorValue < 0){
+      return -1;
+  }
+
+  while(IS_UNDEFINED(map->entries[iteratorValue].key)){
+    
     iteratorValue += 1;
-    if(iteratorValue >= (int)map->capacity){
+
+    if(iteratorValue >= (int)map->capacity || iteratorValue < 0){
       return -1;
     }
   }
 
   vm->apiStack[keySlot] = map->entries[iteratorValue].key;
+
+  iteratorValue += 1;
 
   return iteratorValue;
 }
@@ -2023,7 +2031,6 @@ void wrenSwapSlot(WrenVM* vm, int slota, int slotb)
   vm->apiStack[slotb] = a;
 }
 
-
 WREN_API const char* wrenGetCallingModule(WrenVM* vm){
   ObjFiber* fiber = vm->fiber;
 
@@ -2038,4 +2045,30 @@ WREN_API const char* wrenGetCallingModule(WrenVM* vm){
   } 
 
   return fn->module->name->value;
+}
+
+WREN_API const char* wrenGetTypeName(WrenVM* vm, int slot){
+  /*
+    validateApiSlot(vm, slot);
+    return AS_OBJ(vm->apiStack[slot])->classObj->name->value; 
+
+    // for obj types we can use switch: IS_OBJ(value) && AS_OBJ(value)->type == type;
+
+  if (IS_BOOL(vm->apiStack[slot])) return "bool";
+  else if (IS_CLASS(value)) return "class";
+  else if (IS_CLOSURE(value)) return "Fn";
+  else if (IS_FN(value)) return "Fn";
+  else if (IS_FIBER(value)) return "Fiber";
+  else if (IS_NUM(vm->apiStack[slot])) return "Num";
+  else if (IS_LIST(vm->apiStack[slot])) return "List";
+  else if (IS_MAP(vm->apiStack[slot])) return "Map";
+  else if (IS_RANGE(vm->apiStack[slot])) return "Range";
+  else if (IS_NULL(vm->apiStack[slot])) return "null";
+  else if (IS_STRING(vm->apiStack[slot])) return "String";
+  else if (IS_FOREIGN(vm->apiStack[slot])) return AS_FOREIGN(vm->apiStack[slot])->classObj->name->value;
+  else if (IS_INSTANCE(vm->apiStack[slot])) return AS_INSTANCE(vm->apiStack[slot])->classObj->name->value;
+  
+  return WREN_TYPE_UNKNOWN;
+  */
+ return "wip";
 }
